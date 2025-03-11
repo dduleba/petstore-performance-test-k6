@@ -1,0 +1,19 @@
+{
+  "name": "petstore-k6-performance-test",
+  "version": "1.0.0",
+  "description": "Performance tests for PetStore API using k6",
+  "scripts": {
+    "test": "k6 run src/tests/index.js",
+    "test:create": "k6 run src/tests/create-pet-test.js",
+    "test:get": "k6 run src/tests/get-pet-test.js",
+    "test:find": "k6 run src/tests/find-pets-test.js",
+    "test:load": "k6 run src/tests/load-test.js"
+  },
+  "keywords": [
+    "k6",
+    "performance",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT"
+}

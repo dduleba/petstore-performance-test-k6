@@ -1,0 +1,57 @@
+[
+  {
+    "id": 0,
+    "category": {
+      "id": 1,
+      "name": "Dogs"
+    },
+    "name": "Rex",
+    "photoUrls": [
+      "https://example.com/dog1.jpg"
+    ],
+    "tags": [
+      {
+        "id": 1,
+        "name": "friendly"
+      }
+    ],
+    "status": "available"
+  },
+  {
+    "id": 0,
+    "category": {
+      "id": 2,
+      "name": "Cats"
+    },
+    "name": "Whiskers",
+    "photoUrls": [
+      "https://example.com/cat1.jpg"
+    ],
+    "tags": [
+      {
+        "id": 2,
+        "name": "playful"
+      }
+    ],
+    "status": "available"
+  },
+  {
+    "id": 0,
+    "category": {
+      "id": 3,
+      "name": "Birds"
+    },
+    "name": "Tweety",
+    "photoUrls": [
+11:33
+"https://example.com/bird1.jpg"
+    ],
+    "tags": [
+      {
+        "id": 3,
+        "name": "vocal"
+      }
+    ],
+    "status": "pending"
+  }
+]
