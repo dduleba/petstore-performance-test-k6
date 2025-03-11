@@ -18,3 +18,16 @@ k6 run src/tests/create-pet-test.js
 - src/tests/ - Scenariusze testowe
 - src/modules/ - Moduły pomocnicze i konfiguracje
 - src/data/ - Dane testowe (JSON, CSV)
+```
+
+## tworzenie testów z AI
+
+
+[stworzenie repozytorium](docs/00_create_repo.md)
+
+[próba uruchomienia testów](docs/00_run_tests.md)
+
+[pierwsze poprawki w tescie](docs/01_fix_tests.md)
+
+[pierwszy run testów](docs/01_run_tests.md)
+
