@@ -1,12 +1,11 @@
 import { check, sleep } from 'k6';
-// Usunięto import Counter z 'k6/metrics'
 
-// Prosta funkcja licznika błędów
-let errorCount = 0;
-export function countError() {
-  errorCount++;
-  console.error(`Total errors: ${errorCount}`);
-}
+// Dodaj definicję i eksport errorCounter
+export const errorCounter = {
+  add: (count = 1) => {
+    console.error(`Error occurred! Count: ${count}`);
+  }
+};
 
 export function checkStatus(res, expectedStatus) {
   const success = check(res, {
@@ -15,12 +14,12 @@ export function checkStatus(res, expectedStatus) {
 
   if (!success) {
     console.error(`Expected status ${expectedStatus} but got ${res.status}. Response: ${res.body}`);
-    countError();
+    errorCounter.add(1);
   }
 
   return success;
 }
 
 export function randomSleep() {
-  sleep(Math.random() * 2 + 1); // Losowy czas pomiędzy 1-3s
+  sleep(Math.random() * 2 + 1);
 }
