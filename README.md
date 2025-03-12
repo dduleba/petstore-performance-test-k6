@@ -1,6 +1,8 @@
 # PetStore API Performance Tests
 
-Testy wydajnościowe dla Swagger PetStore API przy użyciu k6.
+Testy wydajnościowe dla Swagger PetStore API przy użyciu k6
+
+- testy wygenerowane na podstawie dyskusji z AI na podstawie kontynując wątek z [petstore-performance-test-gatling](https://github.com/dduleba/petstore-performance-test-gatling/tree/main)
 
 ## Wymagania
 
