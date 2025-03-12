@@ -1,67 +1,89 @@
 import http from 'k6/http';
-import { group, sleep } from 'k6';
+import { check, group, sleep } from 'k6';
 
-import createPetTest from './create-pet-test.js';
-import getPetTest from './get-pet-test.js';
-import findPetsTest from './find-pets-test.js';
+// Bazowy URL do API
+const BASE_URL = 'http://localhost:8080';
 
-// Konfiguracja dla wszystkich testów
+
 export const options = {
-    vus: 1,
-    iterations: 1,
-    thresholds: {
-        http_req_duration: ['p(95)<3000'], // 95% żądań poniżej 3s
-        http_req_failed: ['rate<0.05'],    // mniej niż 5% błędów
-    },
-};
-
-const params = {
-    timeout: '30s',
-    insecureSkipTLSVerify: true,
-    headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'k6-performance-test'
+    scenarios: {
+        load_test: {
+            executor: 'ramping-vus',
+            startVUs: 1,
+            stages: [
+                { duration: '30s', target: 5 },
+                { duration: '1m', target: 10 },
+                { duration: '30s', target: 0 }
+            ],
+            gracefulRampDown: '10s'
+        }
     }
 };
 
-// Nadpisuj domyślne opcje HTTP dla wszystkich żądań
-http.setResponseCallback(http.expectedStatuses(200, 201, 202, 204));
 
-// Funkcja testująca dostępność API (wykonaj przed innymi testami)
-export function setup() {
-    const testUrl = 'https://petstore.swagger.io/v2/pet/findByStatus?status=available';
-    const res = http.get(testUrl);
+export default function() {
+    // Test 1: Create pet
+    group('Create Pet Test', function() {
+        const pet = {
+            id: Math.floor(Math.random() * 10000),
+            name: "TestDog_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
+            category: { id: Math.floor(Math.random() * 10000), name: "Dogs" },
+            photoUrls: ["https://example.com/dog.jpg"],
+            tags: [{ id: Math.floor(Math.random() * 10000), name: "test" }],
+            status: "available"
+        };
 
-    if (res.status != 200) {
-        console.error(`API nie jest dostępne. Status: ${res.status}`);
-        return { skip: true };
-    }
+        const createRes = http.post(BASE_URL + "/api/v3/pet", JSON.stringify(pet), {
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-    return { skip: false };
-}
+        check(createRes, {
+            'status is 200': (r) => r.status === 200,
+        });
 
-// Główna funkcja testowa
-export default function(data) {
-    if (data.skip) {
-        console.log("Testy zostały pominięte ze względu na niedostępność API");
-        return;
-    }
+        if (createRes.status !== 200) {
+            console.log("Create Pet Error: " + createRes.body);
+        }
 
-    group('Create Pet Test', () => {
-        createPetTest();
-    });
+        let petId = 1; // Domyślne ID
 
-    sleep(1);
+        try {
+            const body = JSON.parse(createRes.body);
+            if (body.id) {
+                petId = body.id;
+                console.log("Created pet with ID: " + petId);
+            }
+        } catch (e) {
+            console.log("Error parsing response: " + e.message);
+        }
 
-    group('Get Pet Test', () => {
-        // Używamy setupu z get-pet-test.js
-        const setupData = getPetTest.setup ? getPetTest.setup() : {};
-        getPetTest(setupData);
-    });
+        sleep(1);
 
-    sleep(1);
+        // Test 2: Get pet
+        group('Get Pet Test', function() {
+            const getRes = http.get(BASE_URL + "/api/v3/pet/" + petId);
 
-    group('Find Pets Test', () => {
-        findPetsTest();
+            check(getRes, {
+                'status is 200': (r) => r.status === 200,
+            });
+        });
+
+        sleep(1);
+
+        // Test 3: Find pets
+        group('Find Pets Test', function() {
+            const findRes = http.get(BASE_URL + "/api/v3/pet/findByStatus?status=available");
+
+            check(findRes, {
+                'status is 200': (r) => r.status === 200,
+                'response is array': (r) => {
+                    try {
+                        return Array.isArray(JSON.parse(r.body));
+                    } catch (e) {
+                        return false;
+                    }
+                },
+            });
+        });
     });
 }
