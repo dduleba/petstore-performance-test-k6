@@ -2,6 +2,17 @@
 
 Testy wydajnościowe dla Swagger PetStore API przy użyciu k6
 
+a potrzeby prezentacji korzystamy z aplikacji
+https://github.com/swagger-api/swagger-petstore
+https://petstore3.swagger.io/
+
+Przed rozpoczęciem testów startujemy aplikacje:
+
+```shell
+docker pull swaggerapi/petstore3:unstable
+docker run  --name swaggerapi-petstore3 -d -p 8080:8080 swaggerapi/petstore3:unstable
+```
+
 - testy wygenerowane na podstawie dyskusji z AI na podstawie kontynując wątek z [petstore-performance-test-gatling](https://github.com/dduleba/petstore-performance-test-gatling/tree/main)
 
 ## Wymagania
